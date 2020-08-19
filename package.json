@@ -1,0 +1,37 @@
+{
+  "name": "@5alid/schema",
+  "version": "0.1.0",
+  "description": "model validation utility, similar to mongoose `schema` but for general usage, mainly to validate objects for noSQL databases",
+  "types": "index.d.ts",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublish": "npm version patch && git push -u origin master && tsc",
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watchAll"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/5alidz/schema.git"
+  },
+  "keywords": [
+    "schema",
+    "validator",
+    "typed"
+  ],
+  "author": "5alid",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/5alidz/schema/issues"
+  },
+  "homepage": "https://github.com/5alidz/schema#readme",
+  "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "jest": "^26.0.1",
+    "ts-jest": "^26.1.0",
+    "typescript": "^3.9.5"
+  }
+}
