@@ -38,10 +38,6 @@ export interface Schema {
   [key: string]: Validator;
 }
 
-export interface EmptyObject {
-  [key: string]: unknown;
-}
-
 export interface ValidationError {
   key: string;
   message: string;
@@ -204,7 +200,7 @@ export function validateArray(validator: ArrayValidator, value: unknown): string
   }
 }
 
-export function createSchema<T extends EmptyObject>(
+export function createSchema<T>(
   _schema: Schema
 ): Readonly<{
   validate: (data: T) => ValidationError[] | null;
@@ -230,7 +226,7 @@ export function createSchema<T extends EmptyObject>(
       if (!isPlainObject(validator) || !validator) {
         throw new Error(`Invalid validator "${key}"`);
       }
-      const value = data[key];
+      const value = (data as Record<string, unknown>)[key];
       const err = reducer(validator, value);
 
       if (typeof err == 'string') {
