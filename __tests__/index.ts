@@ -11,6 +11,7 @@ import {
   BooleanValidator,
   ArrayValidator,
   ObjectValidator,
+  UnknownKey,
 } from '../src/index';
 
 describe('is plain object utility', () => {
@@ -25,11 +26,15 @@ describe('is plain object utility', () => {
 
 describe('confirm that both Model and Data are valid objects', () => {
   test('throws when schema is not an object', () => {
+    // @ts-expect-error
     expect(() => createSchema(undefined)).toThrow();
+    // @ts-expect-error
     expect(() => createSchema(null)).toThrow();
   });
   test('throws when data is not an object', () => {
+    // @ts-expect-error
     expect(() => createSchema({ x: { type: 'number' } }).validate(undefined)).toThrow();
+    // @ts-expect-error
     expect(() => createSchema({ x: { type: 'number' } }).validate(null)).toThrow();
   });
 });
@@ -227,6 +232,7 @@ describe('object validator', () => {
     const validator: ObjectValidator = {
       type: 'object',
       shape: {
+        [UnknownKey]: { type: 'string' },
         id: { type: 'string' },
         num: { type: 'number' },
       },
@@ -235,9 +241,10 @@ describe('object validator', () => {
     expect(validateObject(validator, undefined)).toBe('expected object but received undefined');
     expect(validateObject(validator, { id: 'id', num: 42 })).toBe(null);
     expect(validateObject(validator, { id: 'id' })).toStrictEqual(['{}num expected number but received undefined']);
-    expect(validateObject(validator, {})).toStrictEqual([
+    expect(validateObject(validator, { hello: 'world', cya: 42 })).toStrictEqual([
       '{}id expected string but received undefined',
       '{}num expected number but received undefined',
+      '{}cya expected string but received number',
     ]);
   });
 });

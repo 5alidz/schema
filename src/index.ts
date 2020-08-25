@@ -47,6 +47,8 @@ export interface ValidationError {
   message: string;
 }
 
+export const UnknownKey = Symbol.for('schema.object.unknown');
+
 export function isPlainObject(maybeObject: unknown) {
   return (
     typeof maybeObject == 'object' &&
@@ -151,10 +153,9 @@ export function validateObject(validator: ObjectValidator, value: unknown): stri
     return null;
   } else if (!isPlainObject(value)) {
     return `expected object but received ${typeof value}`;
+  } else if (!validator.shape || !isPlainObject(validator.shape)) {
+    return `missing object shape validator`;
   } else {
-    if (!validator.shape) {
-      return `missing object shape validator`;
-    }
     const shapeKeys = Object.keys(validator.shape);
 
     const errors: string[] = [];
@@ -163,6 +164,16 @@ export function validateObject(validator: ObjectValidator, value: unknown): stri
       const shapeValidator = validator.shape[shapeKey];
       const res = reducer(shapeValidator, (value as Record<string, unknown>)[shapeKey]);
       if (res) errors.push(`{}${shapeKey} ${res}`);
+    }
+
+    const unknownValidator = validator.shape[(UnknownKey as unknown) as string];
+    if (unknownValidator) {
+      const unknownKeys = Object.keys(value as Record<string, unknown>).filter((key) => !shapeKeys.includes(key));
+      for (let i = 0; i < unknownKeys.length; i++) {
+        const key = unknownKeys[i];
+        const res = reducer(unknownValidator, (value as Record<string, number>)[key]);
+        if (res) errors.push(`{}${key} ${res}`);
+      }
     }
 
     if (errors.length > 0) {
