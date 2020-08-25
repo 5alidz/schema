@@ -14,5 +14,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/*.js"]
+  "exclude": ["node_modules", "**/*.js", "__tests__"]
 }
