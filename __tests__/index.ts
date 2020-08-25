@@ -32,9 +32,7 @@ describe('confirm that both Model and Data are valid objects', () => {
     expect(() => createSchema(null)).toThrow();
   });
   test('throws when data is not an object', () => {
-    // @ts-expect-error
     expect(() => createSchema({ x: { type: 'number' } }).validate(undefined)).toThrow();
-    // @ts-expect-error
     expect(() => createSchema({ x: { type: 'number' } }).validate(null)).toThrow();
   });
 });
