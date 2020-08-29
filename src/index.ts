@@ -205,6 +205,7 @@ export function createSchema<T>(
 ): Readonly<{
   validate: (data: T) => ValidationError[] | null;
   getSchemaValidator: (config?: { optional: boolean }) => ObjectValidator;
+  produce: (data: T) => T;
 }> {
   if (!isPlainObject(_schema)) {
     throw new Error('schema should be a valid object');
@@ -253,8 +254,18 @@ export function createSchema<T>(
         });
   }
 
+  function produce(data: T): T {
+    const errors = validate(data);
+    if (!errors) {
+      return data;
+    } else {
+      throw errors;
+    }
+  }
+
   return Object.freeze({
     getSchemaValidator,
     validate,
+    produce,
   });
 }

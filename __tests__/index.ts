@@ -246,3 +246,17 @@ describe('object validator', () => {
     ]);
   });
 });
+
+describe('produces new objects', () => {
+  test('simple use case', () => {
+    const Model = createSchema({
+      username: { type: 'string' },
+      password: { type: 'string' },
+    });
+    expect(() => Model.produce({ username: 'user', password: 44 })).toThrow();
+    expect(Model.produce({ username: 'user_name', password: 'strong_password' })).toStrictEqual({
+      username: 'user_name',
+      password: 'strong_password',
+    });
+  });
+});
